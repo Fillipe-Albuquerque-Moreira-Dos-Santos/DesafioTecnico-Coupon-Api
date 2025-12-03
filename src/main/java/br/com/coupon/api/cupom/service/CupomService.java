@@ -5,6 +5,8 @@ import br.com.coupon.api.cupom.entity.Cupom;
 import br.com.coupon.api.cupom.repository.CupomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -15,19 +17,14 @@ public class CupomService {
     private final CupomRepository repository;
 
     public Cupom criar(CupomDTO dto) {
-        // Validar data de expiração
+
         if (dto.getExpirationDate().isBefore(LocalDate.now())) {
             throw new RuntimeException("Data de expiração não pode ser no passado");
         }
-
-        // Processar código: remover caracteres especiais e pegar 6 caracteres
         String codigo = processarCodigo(dto.getCode());
-
-        // Verificar se código já existe
         if (repository.findByCodeAndDeletedFalse(codigo).isPresent()) {
             throw new RuntimeException("Código já existe");
         }
-
         Cupom cupom = new Cupom();
         cupom.setCode(codigo);
         cupom.setDescription(dto.getDescription());
@@ -71,4 +68,28 @@ public class CupomService {
         // Retorna os 6 primeiros caracteres em maiúsculo
         return limpo.substring(0, 6).toUpperCase();
     }
+
+    public Cupom atualizar(Long id, CupomDTO dto) {
+        Cupom cupom = repository.findByIdAndDeletedFalse(id)
+                .orElseThrow(() -> new RuntimeException("Cupom não encontrado"));
+
+        // Validar data de expiração
+        if (dto.getExpirationDate().isBefore(LocalDate.now())) {
+            throw new RuntimeException("Data de expiração não pode ser no passado");
+        }
+
+        // Validar desconto
+        if (dto.getDiscountValue().compareTo(BigDecimal.valueOf(0.5)) < 0) {
+            throw new RuntimeException("O valor mínimo de desconto é 0.5.");
+        }
+
+        // Atualiza campos permitidos
+        cupom.setDescription(dto.getDescription());
+        cupom.setDiscountValue(dto.getDiscountValue());
+        cupom.setExpirationDate(dto.getExpirationDate());
+        cupom.setPublished(dto.getPublished() != null ? dto.getPublished() : false);
+
+        return repository.save(cupom);
+    }
+
 }
