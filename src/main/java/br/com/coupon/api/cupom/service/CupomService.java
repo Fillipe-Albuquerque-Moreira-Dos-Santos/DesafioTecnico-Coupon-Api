@@ -1,4 +1,5 @@
-package br.com.coupon.api.cupom.service;
+package br.com.coupon.api.cupom.service;  // ← MUDA AQUI
+
 import br.com.coupon.api.dto.CupomDTO;
 import br.com.coupon.api.cupom.entity.Cupom;
 import br.com.coupon.api.cupom.repository.CupomRepository;

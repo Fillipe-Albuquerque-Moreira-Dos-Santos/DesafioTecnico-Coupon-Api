@@ -10,17 +10,17 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class CupomDTO {
 
-    @NotBlank(message = "Code é obrigatório")
+    @NotBlank(message = "O código é obrigatório.")
     private String code;
 
-    @NotBlank(message = "Description é obrigatório")
+    @NotBlank(message = "A descrição é obrigatória.")
     private String description;
 
-    @NotNull(message = "DiscountValue é obrigatório")
-    @DecimalMin(value = "0.5", message = "DiscountValue deve ser no mínimo 0.5")
+    @NotNull(message = "O valor do desconto é obrigatório.")
+    @DecimalMin(value = "0.5", message = "O valor do desconto deve ser no mínimo 0.5.")
     private BigDecimal discountValue;
 
-    @NotNull(message = "ExpirationDate é obrigatório")
+    @NotNull(message = "A data de expiração é obrigatória.")
     private LocalDate expirationDate;
 
     private Boolean published = false;
