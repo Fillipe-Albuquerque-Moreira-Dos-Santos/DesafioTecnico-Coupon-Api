@@ -32,8 +32,8 @@
         <table class="table table-hover">
           <thead>
           <tr>
-            <th>Código</th>
-            <th>Descrição</th>
+            <th style="word-break: break-word;">Código</th>
+            <th style="word-break: break-word;">Descrição</th>
             <th>Desconto</th>
             <th>Expiração</th>
             <th>Status</th>
@@ -47,14 +47,14 @@
             </td>
           </tr>
           <tr th:each="cupom : ${cupons}">
-            <td><strong th:text="${cupom.code}"></strong></td>
-            <td th:text="${cupom.description}"></td>
+            <td style="word-break: break-word;"><strong th:text="${cupom.code}">Código</strong></td>
+            <td style="word-break: break-word;" th:text="${cupom.description}">Descrição</td>
             <td>
               <span class="badge bg-success"
                     th:text="'R$ ' + ${#numbers.formatDecimal(cupom.discountValue, 1, 2)}">
               </span>
             </td>
-            <td th:text="${#temporals.format(cupom.expirationDate, 'dd/MM/yyyy')}"></td>
+            <td th:text="${#temporals.format(cupom.expirationDate, 'dd/MM/yyyy')}">00/00/0000</td>
             <td>
               <span th:if="${cupom.published}" class="badge bg-success">Publicado</span>
               <span th:unless="${cupom.published}" class="badge bg-secondary">Inativo</span>

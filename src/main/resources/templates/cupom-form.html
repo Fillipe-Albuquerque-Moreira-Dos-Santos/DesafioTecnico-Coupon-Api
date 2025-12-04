@@ -16,25 +16,33 @@
           <h2 th:text="${cupomId != null ? 'Editar Cupom' : 'Novo Cupom'}">Cupom</h2>
         </div>
         <div class="card-body">
-          <form th:action="${cupomId != null ? '/cupons/' + cupomId : '/cupons'}"
+
+          <div th:if="${errorMessage}"
+               class="alert alert-danger alert-dismissible fade show"
+               role="alert">
+            <span th:text="${errorMessage}">Erro genérico</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+
+          <form th:action="${cupomId != null} ? @{/cupons/{id}(id=${cupomId})} : @{/cupons}"
                 th:object="${cupomDTO}"
                 method="post">
 
-            <!-- Código -->
             <div class="mb-3">
-              <label for="code" class="form-label">Código *</label>
+              <label for="code" class="form-label">Código * (alfanumérico, até 6 chars)</label>
               <input type="text"
                      class="form-control"
                      th:classappend="${#fields.hasErrors('code')} ? 'is-invalid' : ''"
                      id="code"
                      th:field="*{code}"
-                     placeholder="Ex: DESCONTO10">
+                     maxlength="6"
+                     placeholder="CODIGO">
+              <div class="form-text">Caracteres especiais aceitos, mas removidos; garante 6 chars alfanuméricos no save.</div>
               <div class="invalid-feedback" th:if="${#fields.hasErrors('code')}"
                    th:errors="*{code}">
               </div>
             </div>
 
-            <!-- Descrição -->
             <div class="mb-3">
               <label for="description" class="form-label">Descrição *</label>
               <textarea class="form-control"
@@ -48,7 +56,6 @@
               </div>
             </div>
 
-            <!-- Valor do Desconto -->
             <div class="mb-3">
               <label for="discountValue" class="form-label">Valor do Desconto (R$) *</label>
               <input type="number"
@@ -64,7 +71,6 @@
               </div>
             </div>
 
-            <!-- Data de Expiração -->
             <div class="mb-3">
               <label for="expirationDate" class="form-label">Data de Expiração *</label>
               <input type="date"

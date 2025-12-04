@@ -4,7 +4,6 @@ import br.com.coupon.api.dto.CupomDTO;
 import br.com.coupon.api.cupom.entity.Cupom;
 import br.com.coupon.api.cupom.service.CupomService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,27 +16,23 @@ import java.util.List;
 @Controller
 @RequestMapping("/cupons")
 @RequiredArgsConstructor
-@Slf4j
 public class CupomViewController {
 
     private final CupomService service;
 
-    // LISTAR TODOS
     @GetMapping
     public String listar(Model model) {
         List<Cupom> cupons = service.listarTodos();
         model.addAttribute("cupons", cupons);
-        return "cupons"; // Vai para cupons.html
+        return "cupons";
     }
 
-    // FORMULÁRIO NOVO
     @GetMapping("/novo")
     public String novoFormulario(Model model) {
         model.addAttribute("cupomDTO", new CupomDTO());
-        return "cupom-form"; // Vai para cupom-form.html
+        return "cupom-form";
     }
 
-    // CRIAR CUPOM
     @PostMapping
     public String criar(@Valid @ModelAttribute CupomDTO cupomDTO,
                         BindingResult result,
@@ -51,16 +46,13 @@ public class CupomViewController {
             service.criar(cupomDTO);
             redirectAttributes.addFlashAttribute("mensagem", "Cupom criado com sucesso!");
             redirectAttributes.addFlashAttribute("tipo", "success");
+            return "redirect:/cupons";
         } catch (RuntimeException ex) {
-            log.error("Erro ao criar cupom", ex);
-            redirectAttributes.addFlashAttribute("mensagem", "Erro: " + ex.getMessage());
-            redirectAttributes.addFlashAttribute("tipo", "danger");
+            model.addAttribute("errorMessage", ex.getMessage());
+            return "cupom-form";
         }
-
-        return "redirect:/cupons";
     }
 
-    // FORMULÁRIO EDITAR
     @GetMapping("/{id}/editar")
     public String editarFormulario(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
@@ -82,7 +74,6 @@ public class CupomViewController {
         }
     }
 
-    // ATUALIZAR CUPOM
     @PostMapping("/{id}")
     public String atualizar(@PathVariable Long id,
                             @Valid @ModelAttribute CupomDTO cupomDTO,
@@ -98,16 +89,14 @@ public class CupomViewController {
             service.atualizar(id, cupomDTO);
             redirectAttributes.addFlashAttribute("mensagem", "Cupom atualizado com sucesso!");
             redirectAttributes.addFlashAttribute("tipo", "success");
+            return "redirect:/cupons";
         } catch (RuntimeException ex) {
-            log.error("Erro ao atualizar cupom", ex);
-            redirectAttributes.addFlashAttribute("mensagem", "Erro: " + ex.getMessage());
-            redirectAttributes.addFlashAttribute("tipo", "danger");
+            model.addAttribute("errorMessage", ex.getMessage());
+            model.addAttribute("cupomId", id);
+            return "cupom-form";
         }
-
-        return "redirect:/cupons";
     }
 
-    // DELETAR CUPOM
     @PostMapping("/{id}/deletar")
     public String deletar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
@@ -115,7 +104,6 @@ public class CupomViewController {
             redirectAttributes.addFlashAttribute("mensagem", "Cupom deletado com sucesso!");
             redirectAttributes.addFlashAttribute("tipo", "success");
         } catch (RuntimeException ex) {
-            log.error("Erro ao deletar cupom", ex);
             redirectAttributes.addFlashAttribute("mensagem", "Erro: " + ex.getMessage());
             redirectAttributes.addFlashAttribute("tipo", "danger");
         }
