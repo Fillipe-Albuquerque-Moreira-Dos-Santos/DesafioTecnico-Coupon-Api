@@ -10,9 +10,8 @@ Permite criar, listar, editar e excluir cupons, além de marcar se estão public
 - Listar todos os cupons cadastrados: [http://localhost:8080/cupons](http://localhost:8080/cupons)  
 - Criar um novo cupom: [http://localhost:8080/cupons/novo](http://localhost:8080/cupons/novo)
 - Link swagger: http://localhost:8080/swagger-ui/index.html#/
-- Bnco de dados H2: java -cp ~/.m2/repository/com/h2database/h2/2.2.224/h2-2.2.224.jar org.h2.tools.Shell 
+- Banco de dados H2: java -cp ~/.m2/repository/com/h2database/h2/2.2.224/h2-2.2.224.jar org.h2.tools.Shell  / jdbc:h2:file:/home/fillipe/dev/cupom/data/cupomdb;AUTO_SERVER=TRUE
   
-
 ## Funcionalidades
 
 - Listar todos os cupons cadastrados
