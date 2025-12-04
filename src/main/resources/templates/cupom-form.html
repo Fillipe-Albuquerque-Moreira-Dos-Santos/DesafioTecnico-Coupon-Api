@@ -37,7 +37,7 @@
                      th:field="*{code}"
                      maxlength="6"
                      placeholder="CODIGO">
-              <div class="form-text">Caracteres especiais aceitos, mas removidos; garante 6 chars alfanuméricos no save.</div>
+              <div class="form-text"></div>
               <div class="invalid-feedback" th:if="${#fields.hasErrors('code')}"
                    th:errors="*{code}">
               </div>
