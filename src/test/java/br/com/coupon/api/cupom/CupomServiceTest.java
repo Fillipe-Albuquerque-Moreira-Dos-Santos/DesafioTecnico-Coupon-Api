@@ -36,7 +36,6 @@ class CupomServiceTest {
 
     @Test
     void deveCriarCupomComCamposObrigatorios() {
-        // Arrange
         CupomDTO dto = new CupomDTO();
         dto.setCode("ABC123");
         dto.setDescription("Teste");
@@ -53,17 +52,14 @@ class CupomServiceTest {
         when(mapper.toEntity(dto)).thenReturn(cupom);
         when(repository.save(cupom)).thenReturn(cupom);
 
-        // Act
         Cupom result = service.criar(dto);
 
-        // Assert
         assertNotNull(result.getId());
         assertEquals("ABC123", result.getCode());
     }
 
     @Test
     void deveCriarCupomComCodigoProcessado() {
-        // Arrange
         CupomDTO dto = new CupomDTO();
         dto.setCode("AB@C#12");
         dto.setDescription("Teste");
@@ -80,16 +76,13 @@ class CupomServiceTest {
         when(mapper.toEntity(dto)).thenReturn(cupom);
         when(repository.save(cupom)).thenReturn(cupom);
 
-        // Act
         Cupom result = service.criar(dto);
 
-        // Assert
         assertEquals("ABC123", result.getCode());
     }
 
     @Test
     void deveCriarCupomComValorMinimo() {
-        // Arrange
         CupomDTO dto = new CupomDTO();
         dto.setCode("MIN050");
         dto.setDescription("Teste");
@@ -106,16 +99,13 @@ class CupomServiceTest {
         when(mapper.toEntity(dto)).thenReturn(cupom);
         when(repository.save(cupom)).thenReturn(cupom);
 
-        // Act
         Cupom result = service.criar(dto);
 
-        // Assert
         assertEquals(BigDecimal.valueOf(0.5), result.getDiscountValue());
     }
 
     @Test
     void naoDeveCriarCupomComDataPassada() {
-        // Arrange
         CupomDTO dto = new CupomDTO();
         dto.setCode("PAST01");
         dto.setDescription("Teste");
@@ -124,13 +114,11 @@ class CupomServiceTest {
 
         doThrow(new CupomException("Data inválida")).when(validator).validarDataExpiracao(any(LocalDate.class));
 
-        // Act & Assert
         assertThrows(CupomException.class, () -> service.criar(dto));
     }
 
     @Test
     void deveCriarCupomPublicado() {
-        // Arrange
         CupomDTO dto = new CupomDTO();
         dto.setCode("PUB123");
         dto.setDescription("Teste");
@@ -148,16 +136,13 @@ class CupomServiceTest {
         when(mapper.toEntity(dto)).thenReturn(cupom);
         when(repository.save(cupom)).thenReturn(cupom);
 
-        // Act
         Cupom result = service.criar(dto);
 
-        // Assert
         assertTrue(result.getPublished());
     }
 
     @Test
     void deveDeletarCupomComSoftDelete() {
-        // Arrange
         Long id = 1L;
         Cupom cupom = new Cupom();
         cupom.setId(id);
@@ -170,16 +155,13 @@ class CupomServiceTest {
             return cupom;
         });
 
-        // Act
         service.deletar(id);
 
-        // Assert
         assertTrue(cupom.getDeleted());
     }
 
     @Test
     void naoDeveDeletarCupomJaDeletado() {
-        // Arrange
         Long id = 1L;
         Cupom cupom = new Cupom();
         cupom.setId(id);
@@ -188,7 +170,6 @@ class CupomServiceTest {
         when(repository.findById(id)).thenReturn(Optional.of(cupom));
         doThrow(new CupomException("Já deletado")).when(validator).validarCupomNaoDeletado(true);
 
-        // Act & Assert
         assertThrows(CupomException.class, () -> service.deletar(id));
     }
 }
