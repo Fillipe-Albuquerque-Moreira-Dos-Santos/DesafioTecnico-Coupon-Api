@@ -34,7 +34,7 @@ Permite criar, listar, editar e excluir cupons, além de marcar se estão public
 - **Spring Boot 4**
 - **Spring Data JPA**
 - **Thymeleaf**
-- - **Docker**
+- **Docker**
 - **Bootstrap 5**
 - **H2 Database** (memória, para teste)
 - **JUnit 5 / Mockito** (testes unitários)
