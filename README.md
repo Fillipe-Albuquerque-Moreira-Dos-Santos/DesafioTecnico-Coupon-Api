@@ -9,6 +9,7 @@ Permite criar, listar, editar e excluir cupons, além de marcar se estão public
 
 - Listar todos os cupons cadastrados: [http://localhost:8080/cupons](http://localhost:8080/cupons)  
 - Criar um novo cupom: [http://localhost:8080/cupons/novo](http://localhost:8080/cupons/novo)
+- - Link swagger: http://localhost:8080/swagger-ui/index.html#/
 
 ## Funcionalidades
 
