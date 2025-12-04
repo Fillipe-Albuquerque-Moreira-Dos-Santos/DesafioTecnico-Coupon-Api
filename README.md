@@ -36,10 +36,10 @@ Permite criar, listar, editar e excluir cupons, além de marcar se estão public
 - **Thymeleaf** (Para a visualização da funcionalidade no FronEnd)
 - **Docker**
 - **Bootstrap 5**
-- **H2 Database** (memória, para teste)
+- **H2 Database** 
 - **JUnit 5 / Mockito** (testes unitários)
 - **Lombok** 
-- **SpringDoc OpenAPI** (documentação da API)
+- **Swagger** (documentação da API)
 
 
 ## Estrutura do Projeto
