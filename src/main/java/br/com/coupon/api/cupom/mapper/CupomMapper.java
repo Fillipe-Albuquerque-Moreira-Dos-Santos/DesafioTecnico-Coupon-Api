@@ -23,4 +23,14 @@ public class CupomMapper {
         cupom.setExpirationDate(dto.getExpirationDate());
         cupom.setPublished(dto.getPublished() != null ? dto.getPublished() : false);
     }
+
+    public CupomDTO toDto(Cupom cupom) {
+        return new CupomDTO(
+                cupom.getCode(),
+                cupom.getDescription(),
+                cupom.getDiscountValue(),
+                cupom.getExpirationDate(),
+                cupom.getPublished()
+        );
+    }
 }
