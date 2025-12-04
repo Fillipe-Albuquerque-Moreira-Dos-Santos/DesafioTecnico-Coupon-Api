@@ -7,6 +7,9 @@ Permite criar, listar, editar e excluir cupons, além de marcar se estão public
 
 ## Funcionalidades
 
+http://localhost:8080/cupons
+http://localhost:8080/cupons/novo
+
 - Listar todos os cupons cadastrados
 - Criar um novo cupom:
   - Código alfanumérico (até 6 caracteres)
