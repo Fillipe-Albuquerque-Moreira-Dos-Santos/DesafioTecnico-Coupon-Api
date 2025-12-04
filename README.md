@@ -37,3 +37,35 @@ Permite criar, listar, editar e excluir cupons, além de marcar se estão public
 
 ## Estrutura do Projeto
 
+src
+└─ main
+├─ java
+│ └─ br.com.coupon.api
+│ ├─ cupom
+│ │ ├─ controller
+│ │ │ └─ CupomViewController.java
+│ │ ├─ entity
+│ │ │ └─ Cupom.java
+│ │ ├─ repository
+│ │ │ └─ CupomRepository.java
+│ │ ├─ service
+│ │ │ └─ CupomService.java
+│ │ └─ dto
+│ │ └─ CupomDTO.java
+└─ resources
+├─ templates
+│ ├─ cupons.html
+│ └─ cupom-form.html
+└─ static
+
+
+## Executando a Aplicação
+### Pré-requisitos
+
+- Java 21
+- Maven 3.8+
+- IDE opcional (IntelliJ, Eclipse)
+- Banco de dados H2 (embutido) ou outro configurável
+
+
+
