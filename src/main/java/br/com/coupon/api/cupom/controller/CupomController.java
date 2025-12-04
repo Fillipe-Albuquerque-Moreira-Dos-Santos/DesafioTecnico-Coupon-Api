@@ -9,14 +9,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/cupons")
 @RequiredArgsConstructor
-@Tag(name = "Cupons", description = "API de gerenciamento de cupons")
+@Tag(name = "API de gerenciamento de cupons")
 public class CupomController {
 
     private final CupomService service;
@@ -26,7 +24,7 @@ public class CupomController {
     public ResponseEntity<?> criar(@Valid @RequestBody CupomDTO dto) {
         try {
             Cupom cupom = service.criar(dto);
-            return ResponseEntity.created(URI.create("/api/cupons/" + cupom.getId())).body(cupom);
+            return ResponseEntity.status(201).body(cupom);
         } catch (RuntimeException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
