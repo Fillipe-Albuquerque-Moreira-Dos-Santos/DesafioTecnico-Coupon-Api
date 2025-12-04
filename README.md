@@ -33,7 +33,7 @@ Permite criar, listar, editar e excluir cupons, além de marcar se estão public
 - **Java 17**
 - **Spring Boot 4**
 - **Spring Data JPA**
-- **Thymeleaf**
+- **Thymeleaf** (Para a visualização da funcionalidade no FronEnd)
 - **Docker**
 - **Bootstrap 5**
 - **H2 Database** (memória, para teste)
