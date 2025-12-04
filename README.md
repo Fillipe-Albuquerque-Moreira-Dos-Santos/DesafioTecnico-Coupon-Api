@@ -40,15 +40,9 @@ Permite criar, listar, editar e excluir cupons, além de marcar se estão public
 br.com.coupon.api.cupom
 ├── CupomApplication.java         
 ├── controller/
-│   └── CupomViewController.java
 ├── dto/
-│   └── CupomDTO.java
 ├── entity/
-│   └── Cupom.java
 ├── exception/                  
 ├── mapper/                      
 ├── repository/
-│   └── CupomRepository.java
-├── service/
-│   └── CupomService.java
 └── validator/                    
