@@ -30,7 +30,7 @@ Permite criar, listar, editar e excluir cupons, além de marcar se estão public
 - **Bootstrap 5**
 - **H2 Database** (memória, para teste)
 - **JUnit 5 / Mockito** (testes unitários)
-- **Lombok** (redução de boilerplate)
+- **Lombok** 
 - **SpringDoc OpenAPI** (documentação da API)
 
 
