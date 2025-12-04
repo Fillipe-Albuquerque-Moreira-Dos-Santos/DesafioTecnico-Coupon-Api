@@ -1,5 +1,6 @@
 package br.com.coupon.api.cupom.controller;
 
+import br.com.coupon.api.cupom.mapper.CupomMapper;
 import br.com.coupon.api.dto.CupomDTO;
 import br.com.coupon.api.cupom.entity.Cupom;
 import br.com.coupon.api.cupom.service.CupomService;
@@ -20,6 +21,8 @@ public class CupomViewController {
 
     private final CupomService service;
 
+    private final CupomMapper mapper;
+
     @GetMapping
     public String listar(Model model) {
         List<Cupom> cupons = service.listarTodos();
@@ -34,14 +37,10 @@ public class CupomViewController {
     }
 
     @PostMapping
-    public String criar(@Valid @ModelAttribute CupomDTO cupomDTO,
-                        BindingResult result,
-                        Model model,
-                        RedirectAttributes redirectAttributes) {
+    public String criar(@Valid @ModelAttribute CupomDTO cupomDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "cupom-form";
         }
-
         try {
             service.criar(cupomDTO);
             redirectAttributes.addFlashAttribute("mensagem", "Cupom criado com sucesso!");
@@ -57,16 +56,13 @@ public class CupomViewController {
     public String editarFormulario(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
             Cupom cupom = service.buscarPorId(id);
-            CupomDTO dto = new CupomDTO(
-                    cupom.getCode(),
-                    cupom.getDescription(),
-                    cupom.getDiscountValue(),
-                    cupom.getExpirationDate(),
-                    cupom.getPublished()
-            );
+            CupomDTO dto = mapper.toDto(cupom);
+
             model.addAttribute("cupomDTO", dto);
             model.addAttribute("cupomId", id);
+
             return "cupom-form";
+
         } catch (RuntimeException ex) {
             redirectAttributes.addFlashAttribute("mensagem", "Cupom não encontrado!");
             redirectAttributes.addFlashAttribute("tipo", "danger");
@@ -74,12 +70,10 @@ public class CupomViewController {
         }
     }
 
+
+
     @PostMapping("/{id}")
-    public String atualizar(@PathVariable Long id,
-                            @Valid @ModelAttribute CupomDTO cupomDTO,
-                            BindingResult result,
-                            Model model,
-                            RedirectAttributes redirectAttributes) {
+    public String atualizar(@PathVariable Long id, @Valid @ModelAttribute CupomDTO cupomDTO, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             model.addAttribute("cupomId", id);
             return "cupom-form";
