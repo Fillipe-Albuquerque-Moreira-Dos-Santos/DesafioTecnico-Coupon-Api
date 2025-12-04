@@ -45,4 +45,5 @@ br.com.coupon.api.cupom
 ├── exception/                  
 ├── mapper/                      
 ├── repository/
+├── service/
 └── validator/                    
