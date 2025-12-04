@@ -33,7 +33,6 @@ Permite criar, listar, editar e excluir cupons, além de marcar se estão public
 - **Lombok** (redução de boilerplate)
 - **SpringDoc OpenAPI** (documentação da API)
 
----
 
 ## Estrutura do Projeto
 
@@ -60,15 +59,3 @@ src
       └─ static
          └─ css
             └─ style.css
-
-
-## Executando a Aplicação
-### Pré-requisitos
-
-- Java 21
-- Maven 3.8+
-- IDE opcional (IntelliJ, Eclipse)
-- Banco de dados H2 (embutido) ou outro configurável
-
-
-
