@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  cupom-api:
+    build: .
+    container_name: cupom-api
+    ports:
+      - "8080:8080"
+    volumes:
+      - h2data:/data/h2
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/h2/cupomdb;AUTO_SERVER=TRUE"
+    restart: always
+
+volumes:
+  h2data:

@@ -20,7 +20,7 @@
 	<description>Desafio Cupom</description>
 
 	<properties>
-		<java.version>21</java.version>
+		<java.version>17</java.version>
 		<junit-jupiter.version>5.10.3</junit-jupiter.version>
 	</properties>
 
