@@ -30,10 +30,11 @@ Permite criar, listar, editar e excluir cupons, além de marcar se estão public
 
 ## Tecnologias Utilizadas
 
-- **Java 21**
+- **Java 17**
 - **Spring Boot 4**
 - **Spring Data JPA**
 - **Thymeleaf**
+- - **Docker**
 - **Bootstrap 5**
 - **H2 Database** (memória, para teste)
 - **JUnit 5 / Mockito** (testes unitários)
