@@ -19,9 +19,10 @@ public class CupomService {
     private final CupomRepository repository;
 
     @Transactional
-    public Cupom criar(String code, String description, BigDecimal discountValue,
-                       LocalDate expirationDate, boolean published) {
+    public Cupom criar(String code, String description, BigDecimal discountValue, LocalDate expirationDate, boolean published) {
+
         Cupom cupom = Cupom.criar(code, description, discountValue, expirationDate, published);
+
         if (repository.existsByCodeAndDeletedFalse(cupom.getCode())) {
             throw new CupomException("Código já cadastrado: " + cupom.getCode());
         }
@@ -30,10 +31,10 @@ public class CupomService {
 
     @Transactional
     public void deletar(Long id) {
-        Cupom cupom = repository.findById(id)
-                .map(CupomEntity::toDomain)
-                .orElseThrow(() -> new CupomNaoEncontradoException(id));
+        Cupom cupom = repository.findById(id).map(CupomEntity::toDomain).orElseThrow(() -> new CupomNaoEncontradoException(id));
+
         cupom.deletar();
+
         repository.save(CupomEntity.from(cupom));
     }
 }

@@ -22,27 +22,31 @@ public class Cupom {
     private final boolean published;
     private boolean deleted;
 
-    public static Cupom criar(String code, String description, BigDecimal discountValue,
-                              LocalDate expirationDate, boolean published) {
+    public static Cupom criar(String code, String description, BigDecimal discountValue, LocalDate expirationDate, boolean published) {
+
         if (description == null || description.isBlank()) {
             throw new CupomException("Descrição é obrigatória");
         }
+
         if (discountValue == null || discountValue.compareTo(DESCONTO_MINIMO) < 0) {
             throw new CupomException("Valor de desconto mínimo é " + DESCONTO_MINIMO);
         }
+
         if (expirationDate == null || expirationDate.isBefore(LocalDate.now())) {
             throw new CupomException("Data de expiração não pode estar no passado");
         }
+
         return new Cupom(null, normalizarCodigo(code), description.trim(),
                 discountValue, expirationDate, published, false);
     }
 
-    public static Cupom restaurar(Long id, String code, String description, BigDecimal discountValue,
-                                  LocalDate expirationDate, boolean published, boolean deleted) {
+    public static Cupom restaurar(Long id, String code, String description, BigDecimal discountValue, LocalDate expirationDate, boolean published, boolean deleted) {
+
         return new Cupom(id, code, description, discountValue, expirationDate, published, deleted);
     }
 
     public void deletar() {
+
         if (deleted) {
             throw new CupomException("Cupom já está deletado");
         }
