@@ -1,73 +1,108 @@
 package br.com.coupon.api.cupom.web;
 
+import br.com.coupon.api.cupom.application.CupomService;
+import br.com.coupon.api.cupom.domain.Cupom;
+import br.com.coupon.api.cupom.domain.CupomException;
+import br.com.coupon.api.cupom.domain.CupomNaoEncontradoException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class CupomControllerTest {
 
-    @Autowired
-    private WebApplicationContext context;
+    private static final BigDecimal DESCONTO = new BigDecimal("10.00");
+    private static final LocalDate AMANHA = LocalDate.now().plusDays(1);
+
+    @Mock
+    private CupomService service;
+
+    @InjectMocks
+    private CupomController controller;
 
     private MockMvc mvc;
 
     @BeforeEach
-    void setup() {
-        mvc = MockMvcBuilders.webAppContextSetup(context).build();
+    void setUp() {
+        ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter(mapper);
+
+        mvc = MockMvcBuilders.standaloneSetup(controller)
+                .setMessageConverters(converter)
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
     }
 
     @Test
-    void criaCupomNormalizandoCodigo() throws Exception {
-        mvc.perform(post("/coupon").contentType(MediaType.APPLICATION_JSON).content(body("AB@C#12X", true)))
+    void criaCupomERetorna201ComCorpo() throws Exception {
+        Cupom retornadoPeloService = Cupom.criar("ABC123", "Promo", DESCONTO, AMANHA, true);
+        when(service.criar(any(), any(), any(), any(), anyBoolean())).thenReturn(retornadoPeloService);
+
+        mvc.perform(post("/coupon")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body("AB@C12X", true)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.code").value("ABC12X"))
+                .andExpect(jsonPath("$.code").value("ABC123"))
                 .andExpect(jsonPath("$.published").value(true));
+
+        verify(service).criar(eq("AB@C12X"), eq("Promo"), eq(new BigDecimal("10.00")), eq(AMANHA), eq(true));
     }
 
     @Test
-    void rejeitaCodigoDuplicado() throws Exception {
-        mvc.perform(post("/coupon").contentType(MediaType.APPLICATION_JSON).content(body("DUPLIC", false)))
-                .andExpect(status().isCreated());
+    void quandoServiceLancaCupomExceptionRetorna400() throws Exception {
+        when(service.criar(any(), any(), any(), any(), anyBoolean()))
+                .thenThrow(new CupomException("Código já cadastrado: ABC123"));
 
-        mvc.perform(post("/coupon").contentType(MediaType.APPLICATION_JSON).content(body("DUPLIC", false)))
+        mvc.perform(post("/coupon")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body("ABC123", false)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").exists());
+                .andExpect(jsonPath("$.error").value("Código já cadastrado: ABC123"));
     }
 
     @Test
-    void deletaEFalhaAoTentarDeletarNovamente() throws Exception {
-        MvcResult created = mvc.perform(post("/coupon").contentType(MediaType.APPLICATION_JSON).content(body("DELETE", false)))
-                .andExpect(status().isCreated()).andReturn();
-        long id = extractId(created.getResponse().getContentAsString());
+    void deletaERetorna204() throws Exception {
+        mvc.perform(delete("/coupon/1")).andExpect(status().isNoContent());
 
-        mvc.perform(delete("/coupon/" + id)).andExpect(status().isNoContent());
-        mvc.perform(delete("/coupon/" + id)).andExpect(status().isBadRequest());
+        verify(service).deletar(1L);
     }
 
     @Test
-    void deletarInexistenteRetorna404() throws Exception {
-        mvc.perform(delete("/coupon/9999")).andExpect(status().isNotFound());
+    void quandoServiceLancaNaoEncontradoRetorna404() throws Exception {
+        doThrow(new CupomNaoEncontradoException(99L)).when(service).deletar(99L);
+
+        mvc.perform(delete("/coupon/99"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").value("Cupom não encontrado: 99"));
     }
 
     @Test
-    void rejeitaBodyVazio() throws Exception {
-        mvc.perform(post("/coupon").contentType(MediaType.APPLICATION_JSON).content("{}"))
+    void bodyVazioRetorna400ComErrosPorCampo() throws Exception {
+        mvc.perform(post("/coupon")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors").exists());
     }
@@ -75,12 +110,6 @@ class CupomControllerTest {
     private static String body(String code, boolean published) {
         return """
                 {"code":"%s","description":"Promo","discountValue":10.00,"expirationDate":"%s","published":%s}
-                """.formatted(code, LocalDate.now().plusDays(10), published);
-    }
-
-    private static long extractId(String json) {
-        Matcher m = Pattern.compile("\"id\"\\s*:\\s*(\\d+)").matcher(json);
-        if (!m.find()) throw new IllegalStateException(json);
-        return Long.parseLong(m.group(1));
+                """.formatted(code, AMANHA, published);
     }
 }
