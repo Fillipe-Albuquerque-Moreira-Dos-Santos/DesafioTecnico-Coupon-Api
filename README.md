@@ -1,57 +1,58 @@
-# Aplicação de Gestão de Cupons
+# Coupon API
 
-Este projeto é uma **aplicação web para gerenciamento de cupons de desconto**, construída com **Spring Boot**, **Thymeleaf** e **Bootstrap 5**.  
-Permite criar, listar, editar e excluir cupons, além de marcar se estão publicados ou não.
+API REST de cupons de desconto em **Spring Boot 4 / Java 17**, com regras de negócio encapsuladas em um objeto de **domínio** (`Cupom`) separado da **entidade JPA** (`CupomEntity`).
 
----
+## Como rodar
 
-## Links em LocalHost
+```bash
+./mvnw spring-boot:run
+# ou
+docker compose up --build
+```
 
-- Listar todos os cupons cadastrados: [http://localhost:8080/cupons](http://localhost:8080/cupons)  
-- Criar um novo cupom: [http://localhost:8080/cupons/novo](http://localhost:8080/cupons/novo)
-- Link swagger: http://localhost:8080/swagger-ui/index.html#/
-- Banco de dados H2: java -cp ~/.m2/repository/com/h2database/h2/2.2.224/h2-2.2.224.jar org.h2.tools.Shell  / jdbc:h2:file:/home/fillipe/dev/cupom/data/cupomdb;AUTO_SERVER=TRUE
-  
-## Funcionalidades
+- API: http://localhost:8080/coupon
+- Swagger: http://localhost:8080/swagger-ui.html
+- H2 Console: http://localhost:8080/h2-console (JDBC `jdbc:h2:mem:cupomdb`, user `sa`, sem senha)
 
-- Listar todos os cupons cadastrados
-- Criar um novo cupom:
-  - Código alfanumérico (até 6 caracteres)
-  - Descrição
-  - Valor do desconto
-  - Data de expiração
-  - Publicação (ativo/inativo)
-- Editar um cupom existente
-- Deletar um cupom
-- Validação de campos com mensagens de erro
-- Feedback para operações (sucesso/erro)
+## Endpoints
 
----
+| Método | Rota              | Descrição                                |
+|--------|-------------------|------------------------------------------|
+| POST   | `/coupon`         | Cria um cupom (pode nascer publicado)    |
+| DELETE | `/coupon/{id}`    | Soft delete                              |
 
-## Tecnologias Utilizadas
+## Regras (todas em `Cupom.java`)
 
-- **Java 17**
-- **Spring Boot 4**
-- **Spring Data JPA**
-- **Thymeleaf** (Para a visualização da funcionalidade no FronEnd)
-- **Docker**
-- **Bootstrap 5**
-- **H2 Database** 
-- **JUnit 5 / Mockito** (testes unitários)
-- **Lombok** 
-- **Swagger** (documentação da API)
+- Campos obrigatórios: `code`, `description`, `discountValue`, `expirationDate`.
+- `code` alfanumérico de 6 caracteres; especiais são removidos antes de salvar.
+- `discountValue` mínimo `0.5` (sem máximo, valor absoluto).
+- `expirationDate` não pode estar no passado.
+- Cupom pode nascer publicado (`published = true`).
+- Soft delete; cupom já deletado não pode ser deletado de novo.
 
+## Testes
 
-## Estrutura do Projeto
+```bash
+./mvnw test
+```
 
-```text
+## Estrutura
+
+```
 br.com.coupon.api.cupom
-├── CupomApplication.java         
-├── controller/
-├── dto/
-├── entity/
-├── exception/                  
-├── mapper/                      
-├── repository/
-├── service/
-└── validator/                    
+├── CupomApplication
+├── domain/                  regras puras, sem framework
+│   ├── Cupom                domínio + factory + deletar()
+│   ├── CupomException
+│   └── CupomNaoEncontradoException
+├── infrastructure/          JPA
+│   ├── CupomEntity          @Entity + toDomain()/from(Cupom)
+│   └── CupomRepository      Spring Data JpaRepository
+├── application/             caso de uso
+│   └── CupomService
+└── web/                     HTTP
+    ├── CupomController
+    ├── CupomRequest         entrada (Bean Validation)
+    ├── CupomResponse        saída (sem expor flag deleted)
+    └── GlobalExceptionHandler
+```
