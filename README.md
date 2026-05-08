@@ -41,18 +41,18 @@ docker compose up --build
 ```
 br.com.coupon.api.cupom
 ├── CupomApplication
-├── domain/                  regras puras, sem framework
-│   ├── Cupom                domínio + factory + deletar()
+├── domain/
+│   ├── Cupom
 │   ├── CupomException
 │   └── CupomNaoEncontradoException
-├── infrastructure/          JPA
-│   ├── CupomEntity          @Entity + paraDominio()/deDominio(Cupom)
-│   └── CupomRepository      Spring Data JpaRepository
-├── application/             caso de uso
+├── infrastructure/
+│   ├── CupomEntity
+│   └── CupomRepository
+├── application/
 │   └── CupomService
-└── web/                     HTTP
+└── web/
     ├── CupomController
-    ├── CupomRequest         entrada (Bean Validation)
-    ├── CupomResponse        saída (sem expor flag deleted)
+    ├── CupomRequest
+    ├── CupomResponse
     └── GlobalExceptionHandler
 ```
