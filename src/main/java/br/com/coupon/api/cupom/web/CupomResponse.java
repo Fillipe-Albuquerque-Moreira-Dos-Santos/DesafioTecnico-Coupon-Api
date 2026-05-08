@@ -15,7 +15,7 @@ public class CupomResponse {
     LocalDate expirationDate;
     boolean published;
 
-    public static CupomResponse from(Cupom c) {
+    public static CupomResponse deDominio(Cupom c) {
         return new CupomResponse(c.getId(), c.getCode(), c.getDescription(),
                 c.getDiscountValue(), c.getExpirationDate(), c.isPublished());
     }

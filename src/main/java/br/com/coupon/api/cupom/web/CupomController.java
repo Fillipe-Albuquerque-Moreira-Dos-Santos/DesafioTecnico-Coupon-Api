@@ -25,7 +25,7 @@ public class CupomController {
     public CupomResponse criar(@Valid @RequestBody CupomRequest req) {
 
         Cupom cupom = service.criar(req.getCode(), req.getDescription(), req.getDiscountValue(), req.getExpirationDate(), req.isPublished());
-        return CupomResponse.from(cupom);
+        return CupomResponse.deDominio(cupom);
     }
 
     @DeleteMapping("/{id}")

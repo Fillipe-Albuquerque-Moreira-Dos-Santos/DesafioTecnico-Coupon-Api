@@ -43,12 +43,12 @@ public class CupomEntity {
     @Column(nullable = false)
     private boolean deleted;
 
-    public static CupomEntity from(Cupom c) {
+    public static CupomEntity deDominio(Cupom c) {
         return new CupomEntity(c.getId(), c.getCode(), c.getDescription(),
                 c.getDiscountValue(), c.getExpirationDate(), c.isPublished(), c.isDeleted());
     }
 
-    public Cupom toDomain() {
+    public Cupom paraDominio() {
         return Cupom.restaurar(id, code, description, discountValue, expirationDate, published, deleted);
     }
 }

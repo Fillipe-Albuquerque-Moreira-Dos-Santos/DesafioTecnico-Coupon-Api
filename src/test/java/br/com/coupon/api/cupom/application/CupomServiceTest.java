@@ -38,7 +38,7 @@ class CupomServiceTest {
 
     @Test
     void criarSalvaERetornaCupomComIdGerado() {
-        when(repository.existsByCodeAndDeletedFalse("ABC123")).thenReturn(false);
+        when(repository.existeCodigoAtivo("ABC123")).thenReturn(false);
         when(repository.save(any(CupomEntity.class)))
                 .thenReturn(new CupomEntity(42L, "ABC123", "Promo", DESCONTO, AMANHA, false, false));
 
@@ -46,12 +46,12 @@ class CupomServiceTest {
 
         assertEquals(42L, cupom.getId());
         assertEquals("ABC123", cupom.getCode());
-        verify(repository).existsByCodeAndDeletedFalse("ABC123");
+        verify(repository).existeCodigoAtivo("ABC123");
     }
 
     @Test
     void criarFalhaQuandoCodigoJaCadastrado() {
-        when(repository.existsByCodeAndDeletedFalse("ABC123")).thenReturn(true);
+        when(repository.existeCodigoAtivo("ABC123")).thenReturn(true);
 
         CupomException ex = assertThrows(CupomException.class, () ->
                 service.criar("ABC123", "Promo", DESCONTO, AMANHA, false));
