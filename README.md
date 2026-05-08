@@ -46,7 +46,7 @@ br.com.coupon.api.cupom
 │   ├── CupomException
 │   └── CupomNaoEncontradoException
 ├── infrastructure/          JPA
-│   ├── CupomEntity          @Entity + toDomain()/from(Cupom)
+│   ├── CupomEntity          @Entity + paraDominio()/deDominio(Cupom)
 │   └── CupomRepository      Spring Data JpaRepository
 ├── application/             caso de uso
 │   └── CupomService
